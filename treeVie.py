@@ -1,13 +1,15 @@
 import tkinter as tk 
 from tkinter import *
+from ttkwidgets.autocomplete import AutocompleteEntryListbox
 from tkinter import ttk
 from tkinter import font
 import mysql.connector
 import pymysql
+from tkcalendar import Calendar, DateEntry
 
 
 root = Tk()
-root.geometry("1200x800+0+0")
+root.geometry("1500x800+0+0")
 lab = Label(root, text="ADMINSTRATION PANEL",fg="red", font=("times new roman", 24,"bold"))
 lab.place(x=300,y=20)
 
@@ -32,6 +34,14 @@ def serachs():
     ent4.delete(0,END)
     ent5.delete(0,END)
     ent6.delete(0,END)
+
+def new():
+    con = pymysql.connect(host="localhost", user="root", password="", database="sufyan" )
+    cur = con.cursor()
+    cur.execute("insert into userinformations where first_name = %s, last_name = %s, occupation=%s,dob=%s,country=%s",(fname.get(),lname.get(),occup.get(),dob.get(),country.get()))
+
+    row = cur.fetchall()
+    
 
 def selected():
     #delete previous loaded data from entry boxes
@@ -89,9 +99,11 @@ search.place(x=700,y=20)
 searchbtn = Button(root,text="SERACH",command=serachs)
 searchbtn.place(x=800,y=20)
 btn = Button(root, text="SELECTED", command=selected)
-btn.place(x=100,y=700)
-ubtn = Button(root, text="Update", command=update)
-ubtn.place(x=200,y=700)
+btn.place(x=500,y=670,width=70)
+ubtn = Button(root, text="Update",bg="blue",fg="white", command=update)
+ubtn.place(x=500,y=720,width=70)
+Dbtn = Button(root, text="Delete",bg="red",fg="white", command=update)
+Dbtn.place(x=500,y=770,width=70)
 
 
 con = pymysql.connect(host="localhost", user="root", password="", database="sufyan" )
@@ -114,12 +126,12 @@ s.configure("Treeview.Heading", foreground="BLUE", font=("times new roman", 14, 
 
 #adding columns
 
-treeview.column('Id', width=50, minwidth=50,anchor=tk.CENTER)
-treeview.column('Name', width=50, minwidth=50,anchor=tk.CENTER)
-treeview.column('Lastname', width=50, minwidth=50,anchor=tk.CENTER)
-treeview.column('Occupation', width=50, minwidth=50,anchor=tk.CENTER)
-treeview.column('date of Birth', width=50, minwidth=50,anchor=tk.CENTER)
-treeview.column('Country', width=50, minwidth=50,anchor=tk.CENTER)
+treeview.column('Id', width=5, minwidth=5,anchor=tk.CENTER)
+treeview.column('Name', width=30, minwidth=20,anchor=tk.CENTER)
+treeview.column('Lastname', width=30, minwidth=20,anchor=tk.CENTER)
+treeview.column('Occupation', width=30, minwidth=30,anchor=tk.CENTER)
+treeview.column('date of Birth', width=30, minwidth=30,anchor=tk.CENTER)
+treeview.column('Country', width=30, minwidth=30,anchor=tk.CENTER)
 
 #adding heading
 treeview.heading('Id', text='Id', anchor=CENTER)
@@ -130,7 +142,7 @@ treeview.heading('date of Birth', text='Date of Birth' ,anchor=CENTER)
 treeview.heading('Country', text='Country' ,anchor=CENTER)
 #treeview.pack(side=TOP, fill=BOTH)
 
-treeview.place(x=0,y=100,width=1200,height=500)
+treeview.place(x=0,y=100,width=1000,height=500)
 
     
 i = 0
@@ -148,17 +160,68 @@ global ent4
 global ent5
 global ent6
 
+#Delete And Update records
+UaD = Label(root, text="Update/Delete records",fg="red", font=("times new roman",22))
+UaD.place(x=30,y=620)
+
 ent1 = Entry(root,width=30)
-ent1.place(x=10,y=650)
+ent1.place(x=10,y=670,height=30)
 ent2 = Entry(root,width=30)
-ent2.place(x=200,y=650)
+ent2.place(x=230,y=670,height=30)
 ent3 = Entry(root,width=30)
-ent3.place(x=390,y=650)
+ent3.place(x=10,y=710,height=30)
 ent4 = Entry(root,width=30)
-ent4.place(x=580,y=650)
+ent4.place(x=230,y=710,height=30)
 ent5 = Entry(root,width=30)
-ent5.place(x=770,y=650)
+ent5.place(x=10,y=750,height=30)
 ent6 = Entry(root,width=30)
-ent6.place(x=960,y=650)
+ent6.place(x=230,y=750,height=30)
+
+#Create New User
+cframe = Frame(root,width=420,height=590)
+cframe.place(x=1030,y=0)
+
+Nlabel =Label(cframe, text="Create New User", font=("times new roman",24,"bold"),fg="green")
+Nlabel.place(x=100,y=20)
+
+#New user
+firstname = Label(cframe, text="First Name : ", font=("times new roman",15),fg="blue")
+firstname.place(x=10,y=150)
+lastname = Label(cframe, text="Last Name : ", font=("times new roman",15),fg="blue")
+lastname.place(x=10,y=200)
+occupation = Label(cframe, text="Occupation : ", font=("times new roman",15),fg="blue")
+occupation.place(x=10,y=250)
+dobirth = Label(cframe, text="D.O.B : ", font=("times new roman",15),fg="blue")
+dobirth.place(x=10,y=300)
+Country = Label(cframe, text="Country : ", font=("times new roman",15),fg="blue")
+Country.place(x=10,y=350)
+
+#new user entry
+global fname
+fname = Entry(cframe, font=("times new roman",15),fg="Gray")
+fname.place(x=150,y=150)
+global lname
+lname = Entry(cframe, font=("times new roman",15),fg="gray")
+lname.place(x=150,y=200)
+global occup
+occup = Entry(cframe, font=("times new roman",15),fg="gray")
+occup.place(x=150,y=250)
+global dob
+dob = DateEntry(cframe, font=("times new roman",15),fg="gray")
+dob.place(x=150,y=300)
+global country
+country = Entry(cframe, font=("times new roman",15),fg="gray")
+country.place(x=150,y=350)
+
+#Create user button
+Cbtn = Button(cframe, text="ADD USER",fg="WHITE", bg="blue",width=20, height=2, command=new)
+Cbtn.place(x=10,y=400)
+
+
+
+
+
+
+
 
 root.mainloop()
