@@ -29,8 +29,8 @@ def empty():
         messagebox.showerror("ERROR", "All fields are required")
 
 def loginPage():
-    root.destroy()
-    import loginpage
+    frame = Frame(root,width=1400, height=800,bg="gray")
+    frame.place(x=0,y=0)
 def login():
     
     try:
@@ -57,51 +57,51 @@ def login():
     
 #window
 root = Tk()  
-root.geometry('1000x550')  
+root.geometry('1400x800+0+0')  
 root.title('Stationary Management System')
 global usernameEntry
 
 usernameEntry = StringVar()
 
-Modelname = Label(root, font=("arial",30,BOLD), text="Stationary Management System")
-Modelname.place(x=250, y=80)
+Modelname = Label(root, font=("arial",35,BOLD), text="Stationary Management System")
+Modelname.place(x=420, y=250)
 
 
 username = Label(root,  font=("arial",14,BOLD), foreground="red", text="User Name")
-username.place(x=350, y=195)
+username.place(x=550, y=360)
 username = StringVar()
 
 
 
 usernameEntry = Entry(root, textvariable=username )
-usernameEntry.place(x=500, y=200, width=200, height=25)
+usernameEntry.place(x=700, y=365, width=200, height=25)
 
 
 passwordLabel = Label(root, font=("arial",14,BOLD), foreground="red", text="Password")
-passwordLabel.place(x=350, y=245 )
+passwordLabel.place(x=550, y=415 )
 password = StringVar()
 passwordEntry = Entry(root, textvariable=password, show='*')
-passwordEntry.place(x=500, y=250 , width=200, height=25)
+passwordEntry.place(x=700, y=420 , width=200, height=25)
 
 
 #All Buttons 
 
 loginButton = Button(root, text="Login", font=("arial", 12, BOLD), command=lambda:[passchk(), empty(),login()])#validateLogin
-loginButton.place(x=350, y=300 , width=130)
+loginButton.place(x=520, y=500 , width=130)
 
 resetButton = Button(root, text="Reset", font=("arial", 12, BOLD), foreground="blue" , command=reset)
-resetButton.place(x=480, y=300 , width=130)
+resetButton.place(x=660, y=500 , width=130)
 
 exitButton = Button(root, text="Exit", font=("arial", 12, BOLD),foreground="red", command=root.destroy) 
-exitButton.place(x=610, y=300 , width=130)
+exitButton.place(x=800, y=500 , width=130)
 
 StockButton = Button(root, text="Stock",state="disable" ,font=("arial", 12, BOLD),foreground="red")  
-StockButton.place(x=420, y=400 , width=130)
+StockButton.place(x=590, y=600 , width=130)
 
 SellButton = Button(root, text="Sell", state="disable", font=("arial", 12, BOLD),foreground="red")  
-SellButton.place(x=610, y=400 , width=130)
+SellButton.place(x=780, y=600 , width=130)
 
 validateLogin = partial(validateLogin, username, password)
 
     
-root.mainloop() 
+root.mainloop()     
