@@ -24,7 +24,9 @@ lname_var = StringVar()
 email_var =StringVar()
 passw_var = StringVar()
 occup_var = StringVar()
-
+pname_var = StringVar()
+Price_var =StringVar()
+Qty_var= StringVar()
 
 
 def searchs():
@@ -64,11 +66,11 @@ def new():
                 cur.execute("insert into employees(fname,lname,email,passwrd,occupation) values(%s,%s,%s,%s,%s)",(fname_var.get(),lname_var.get(),email_var.get(),passw_var.get(),occup_var.get()))
                 con.commit()
                 con.close
-                fname.delete(0,END)
-                lname.delete(0,END)
-                email.delete(0,END)
-                passrd.delete(0,END)
-                occup.delete(0,END)
+                fname_var.delete(0,END)
+                lname_var.delete(0,END)
+                email_.delete(0,END)
+                passw_var.delete(0,END)
+                occup_var.delete(0,END)
                 messagebox.showinfo("New User", "New user added successfully")
             else:
                 messagebox.showerror("error","Already exist")
@@ -77,6 +79,21 @@ def new():
 
             
     
+def Newpro():
+    con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
+    cur = con.cursor()
+    if p_name.get() == "" or price.get() == "" or Qty.get()== "":
+        messagebox.showerror("Field Error"," All fields are required")
+    else:
+        cur.execute("insert into products(PName,Price,QTY) values(%s,%s,%s)",(pname_var.get(),Price_var.get(),Qty_var.get()))
+        con.commit()
+        con.close
+        messagebox.showinfo("New Product", "New product added successfully")
+            
+
+        
+    
+
 
 def selected():
     
@@ -239,11 +256,10 @@ def TAB():
 
 
     ## order 
-    con3 = pymysql.connect(host="localhost", user="root", password="", database="employee" )
-    cur3 = con3.cursor()
-    cur3.execute("select * from products")
-    row3 = cur.fetchall()
-
+    con4 = pymysql.connect(host="localhost", user="root", password="", database="employee" )
+    cur4 = con4.cursor()
+    cur4.execute("select * from products")
+    row4 = cur4.fetchall()
     treeview3 =ttk.Treeview(root,height=700)
     treeview3["columns"]= ("PId","P_Name","Price","Qty","Defects")
     treeview3["show"]="headings"
@@ -273,8 +289,8 @@ def TAB():
 
         
     i = 0
-    for ro in row3:
-        treeview3.insert('',i, text="", values=(ro[0],ro[1],ro[2],ro[3],ro[4],ro[5]))
+    for ro in row4:
+        treeview3.insert('',i, text="", values=(ro[0],ro[1],ro[2],ro[3],ro[4]))
         i = i+1
     hsb = ttk.Scrollbar(treeview3, orient="vertical")
     hsb.configure(command=treeview3.yview)
@@ -339,21 +355,21 @@ Nlabel.place(x=970,y=600)
 global P_name
 P_name = Label(root, text="P_Name : ", font=("times new roman",15),fg="blue")
 P_name.place(x=750,y=670)
-p_name = Entry(root, font=("times new roman",15),fg="Gray")
+p_name = Entry(root,textvariable=pname_var, font=("times new roman",15),fg="Gray")
 p_name.place(x=850,y=670)
 
 global price
 LPrice = Label(root, text="Price : ", font=("times new roman",15),fg="blue")
 LPrice.place(x=750,y=710)
-price = Entry(root, font=("times new roman",15),fg="gray")
+price = Entry(root,textvariable=Price_var, font=("times new roman",15),fg="gray")
 price.place(x=850,y=710)
 global Qty
-
 LQTY = Label(root, text="QTY : ", font=("times new roman",15),fg="blue")
 LQTY.place(x=750,y=750)
-Qty = Entry(root, font=("times new roman",15),fg="gray")
+Qty = Entry(root, font=("times new roman",15),textvariable=Qty_var,fg="gray")
 Qty.place(x=850,y=750)
-
+Pbtn = Button(root, text="Delete",bg="red",fg="white", command=Newpro)
+Pbtn.place(x=1050,y=770,width=70)
 
 #Create user button
 rbtn = Button(root, text="REFRESH",fg="WHITE", bg="orange", command=TAB)
