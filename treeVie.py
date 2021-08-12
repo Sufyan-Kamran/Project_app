@@ -10,7 +10,13 @@ from tkinter import messagebox
 root = Tk()
 root.geometry("1500x800+0+0")
 lab = Label(root, text="ADMINSTRATION PANEL",fg="red", font=("times new roman", 24,"bold"))
-lab.place(x=600,y=10)
+lab.place(x=600,y=2)
+lab1 = Label(root, text="Employees",fg="black", font=("times new roman", 18,"bold"))
+lab1.place(x=10,y=70)
+lab2 = Label(root, text="Orders",fg="Green", font=("times new roman", 18,"bold"))
+lab2.place(x=420,y=70)
+lab3 = Label(root, text="Inventrory",fg="blue", font=("times new roman", 18,"bold"))
+lab3.place(x=900,y=70)
 
 id_var = StringVar()
 fname_var = StringVar()
@@ -48,14 +54,14 @@ def new():
     cur = con.cursor()
     cur.execute("select * from employees where email=%s",email.get())
     row = cur.fetchone()
-    if fname.get() == "" or lname.get() == "" or email.get()== "" or passrd.get() == "" or occup.get() == "":
+    if fname_var.get() == "" or lname_var.get() == "" or email_var.get()== "" or passw_var.get() == "" or occup_var.get() == "":
         messagebox.showerror("Field Error"," All fields are required")
     else:
-        if len(passrd.get()) < 8:
+        if len(passw_var.get()) < 8:
             messagebox.showerror("Password Error","Password must be contain 8 character ")
         else:
             if row == None:
-                cur.execute("insert into employees(fname,lname,email,passwrd,occupation) values(%s,%s,%s,%s,%s)",(fname.get(),lname.get(),email.get(),passrd.get(),occup.get()))
+                cur.execute("insert into employees(fname,lname,email,passwrd,occupation) values(%s,%s,%s,%s,%s)",(fname_var.get(),lname_var.get(),email_var.get(),passw_var.get(),occup_var.get()))
                 con.commit()
                 con.close
                 fname.delete(0,END)
@@ -137,6 +143,9 @@ def delt():
 
 
 def TAB():
+    global treeview
+    global treeview2
+    global treeview3
     con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
     cur = con.cursor()
     cur.execute("select * from employees")
@@ -153,11 +162,10 @@ def TAB():
     s = ttk.Style(root)
     s.theme_use("vista")
     s.configure(".", font=('times new roman', 11))
-    s.configure("Treeview.Heading", foreground="BLUE", font=("times new roman", 14, "bold"))
-
+    s.configure("Treeview.Heading", foreground="blue", font=("times new roman", 14, "bold"))
     #adding columns
 
-    treeview.column('Id', width=5, minwidth=5,anchor=tk.CENTER)
+    treeview.column('Id', width=1, minwidth=1,anchor=tk.CENTER)
     treeview.column('Name', width=30, minwidth=20,anchor=tk.CENTER)
     treeview.column('Lastname', width=30, minwidth=20,anchor=tk.CENTER)
     treeview.column('email', width=30, minwidth=30,anchor=tk.CENTER)
@@ -173,7 +181,7 @@ def TAB():
     treeview.heading('Occupation', text='Occupation' ,anchor=CENTER)
     #treeview.pack(side=TOP, fill=BOTH)
 
-    treeview.place(x=0,y=100,width=900,height=500)
+    treeview.place(x=0,y=100,width=410,height=500)
 
         
     i = 0
@@ -188,6 +196,11 @@ def TAB():
 
 
     ## order 
+    
+    con2 = pymysql.connect(host="localhost", user="root", password="", database="employee" )
+    cur2 = con2.cursor()
+    cur2.execute("select * from orders")
+    row2 = cur2.fetchall()
     treeview2 =ttk.Treeview(root,height=700)
     treeview2["columns"]= ("Id","Name","email","order","date")
     treeview2["show"]="headings"
@@ -212,16 +225,60 @@ def TAB():
     treeview2.heading('date', text='Date' ,anchor=CENTER)
     #treeview2.pack(side=TOP, fill=BOTH)
 
-    treeview2.place(x=920,y=100,width=570,height=500)
+    treeview2.place(x=420,y=100,width=470,height=500)
 
         
     i = 0
-    for ro in row:
+    for ro in row2:
         treeview2.insert('',i, text="", values=(ro[0],ro[1],ro[2],ro[3],ro[4],ro[5]))
         i = i+1
     hsb = ttk.Scrollbar(treeview2, orient="vertical")
     hsb.configure(command=treeview2.yview)
     treeview2.configure(yscrollcommand=hsb.set)
+    hsb.pack(fill=Y,side=RIGHT)
+
+
+    ## order 
+    con3 = pymysql.connect(host="localhost", user="root", password="", database="employee" )
+    cur3 = con3.cursor()
+    cur3.execute("select * from products")
+    row3 = cur.fetchall()
+
+    treeview3 =ttk.Treeview(root,height=700)
+    treeview3["columns"]= ("PId","P_Name","Price","Qty","Defects")
+    treeview3["show"]="headings"
+    s = ttk.Style(root)
+    s.theme_use("vista")
+    s.configure(".", font=('times new roman', 11))
+    s.configure("treeview3.Heading", foreground="BLUE", font=("times new roman", 14, "bold"))
+
+    #adding columns
+
+
+    treeview3.column('PId', width=5, minwidth=5,anchor=tk.CENTER)
+    treeview3.column('P_Name', width=30, minwidth=20,anchor=tk.CENTER)
+    treeview3.column('Price', width=30, minwidth=30,anchor=tk.CENTER)
+    treeview3.column('Qty', width=30, minwidth=30,anchor=tk.CENTER)
+    treeview3.column('Defects', width=30, minwidth=30,anchor=tk.CENTER)
+
+    #adding heading
+    treeview3.heading('PId', text='PId', anchor=CENTER)
+    treeview3.heading('P_Name', text='P_Name', anchor=CENTER)
+    treeview3.heading('Price', text='Price' ,anchor=CENTER)
+    treeview3.heading('Qty', text='Qty' ,anchor=CENTER)
+    treeview3.heading('Defects', text='Defected' ,anchor=CENTER)
+    #treeview3.pack(side=TOP, fill=BOTH)
+
+    treeview3.place(x=900,y=100,width=600,height=500)
+
+        
+    i = 0
+    for ro in row3:
+        treeview3.insert('',i, text="", values=(ro[0],ro[1],ro[2],ro[3],ro[4],ro[5]))
+        i = i+1
+    hsb = ttk.Scrollbar(treeview3, orient="vertical")
+    hsb.configure(command=treeview3.yview)
+    treeview3.configure(yscrollcommand=hsb.set)
     hsb.pack(fill=Y,side=RIGHT)
 
 
@@ -233,69 +290,83 @@ global ent5
 global ent6
 
 #Delete And Update records
-UaD = Label(root, text="Update/Delete records",fg="red", font=("times new roman",22))
-UaD.place(x=30,y=620)
+UaD = Label(root, text="Add/Update/Delete records",fg="Purple", font=("times new roman",22))
+UaD.place(x=10,y=610)
 
+lent1 = Label(root,text="ID", fg="blue",font=("times new roman",16))
+lent1.place(x=10,y=670)
 ent1 = Entry(root,textvariable=id_var,width=30)
-ent1.place(x=10,y=670,height=30)
+ent1.place(x=120,y=670,height=30)
+
+lent2 = Label(root,text="First Name", fg="blue",font=("times new roman",16))
+lent2.place(x=340,y=670)
 ent2 = Entry(root,width=30,textvariable=fname_var)
-ent2.place(x=230,y=670,height=30)
+ent2.place(x=440,y=670,height=30)
+
+lent3 = Label(root,text="Last Name", fg="blue",font=("times new roman",16))
+lent3.place(x=10,y=710)
 ent3 = Entry(root,width=30,textvariable=lname_var)
-ent3.place(x=10,y=710,height=30)
+ent3.place(x=120,y=710,height=30)
+
+lent4 = Label(root,text="Email", fg="blue",font=("times new roman",16))
+lent4.place(x=340,y=710)
 ent4 = Entry(root,width=30,textvariable=email_var)
-ent4.place(x=230,y=710,height=30)
+ent4.place(x=440,y=710,height=30)
+
+lent5 = Label(root,text="Password", fg="blue",font=("times new roman",16))
+lent5.place(x=340,y=750)
 ent5 = Entry(root,width=30,textvariable=passw_var)
-ent5.place(x=10,y=750,height=30)
+ent5.place(x=440,y=750,height=30)
+
+lent6 = Label(root,text="occupation", fg="blue",font=("times new roman",16))
+lent6.place(x=10,y=750)
 ent6 = Entry(root,width=30,textvariable=occup_var)
-ent6.place(x=230,y=750,height=30)
+ent6.place(x=120,y=750,height=30)
 
 #Create New User
 #cframe = Frame(root,width=420,height=590)
 #cframe.place(x=1030,y=0)
 
-Nlabel =Label(root, text="Create New User", font=("times new roman",24,"bold"),fg="green")
+Nlabel =Label(root, text="New Product", font=("times new roman",24,"bold"),fg="green")
 Nlabel.place(x=970,y=600)
 
 #New user
-firstname = Label(root, text="First Name : ", font=("times new roman",15),fg="blue")
-firstname.place(x=700,y=670)
-lastname = Label(root, text="Last Name : ", font=("times new roman",15),fg="blue")
-lastname.place(x=700,y=710)
-Eemail = Label(root, text="Email : ", font=("times new roman",15),fg="blue")
-Eemail.place(x=700,y=750)
-Epassword = Label(root, text="Password : ", font=("times new roman",15),fg="blue")
-Epassword.place(x=1050,y=670)
-Occupation = Label(root, text="Occupation : ", font=("times new roman",15),fg="blue")
-Occupation.place(x=1050,y=710)
 
-#new user entry
-global fname
-fname = Entry(root, font=("times new roman",15),fg="Gray")
-fname.place(x=820,y=670)
-global lname
-lname = Entry(root, font=("times new roman",15),fg="gray")
-lname.place(x=820,y=710)
-global email
-email = Entry(root, font=("times new roman",15),fg="gray")
-email.place(x=820,y=750)
-global passrd
-passrd = Entry(root, font=("times new roman",15),fg="gray")
-passrd.place(x=1180,y=670)
-global occup
-occup = Entry(root, font=("times new roman",15),fg="gray")
-occup.place(x=1180,y=710)
+
+
+#new product entry
+
+global P_name
+P_name = Label(root, text="P_Name : ", font=("times new roman",15),fg="blue")
+P_name.place(x=750,y=670)
+p_name = Entry(root, font=("times new roman",15),fg="Gray")
+p_name.place(x=850,y=670)
+
+global price
+LPrice = Label(root, text="Price : ", font=("times new roman",15),fg="blue")
+LPrice.place(x=750,y=710)
+price = Entry(root, font=("times new roman",15),fg="gray")
+price.place(x=850,y=710)
+global Qty
+
+LQTY = Label(root, text="QTY : ", font=("times new roman",15),fg="blue")
+LQTY.place(x=750,y=750)
+Qty = Entry(root, font=("times new roman",15),fg="gray")
+Qty.place(x=850,y=750)
+
 
 #Create user button
-rbtn = Button(root, text="REFRESH",fg="WHITE", bg="Green", command=TAB)
-rbtn.place(x=500,y=620,width=70)
+rbtn = Button(root, text="REFRESH",fg="WHITE", bg="orange", command=TAB)
+rbtn.place(x=650,y=610,width=70)
 btn = Button(root, text="SELECTED", command=selected)
-btn.place(x=500,y=670,width=70)
+btn.place(x=650,y=650,width=70)
+abtn = Button(root, text="Add User",fg="WHITE", bg="Green", command=new)
+abtn.place(x=650,y=690,width=70)
 ubtn = Button(root, text="Update",bg="blue",fg="white", command=update)
-ubtn.place(x=500,y=720,width=70)
+ubtn.place(x=650,y=730,width=70)
 Dbtn = Button(root, text="Delete",bg="red",fg="white", command=delt)
-Dbtn.place(x=500,y=770,width=70)
-Cbtn = Button(root, text="ADD USER",fg="WHITE", bg="blue",width=20, height=2, command=new)
-Cbtn.place(x=1180,y=750)
+Dbtn.place(x=650,y=770,width=70)
+
 
 
 TAB()
