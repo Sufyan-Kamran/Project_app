@@ -6,6 +6,7 @@ from tkinter.font import BOLD
 from tkinter import messagebox
 import re
 import pymysql
+from tkinter import ttk
 from PIL import Image, ImageTk
 ######################################### Section1 #######################################################
 def validateLogin(username, password):
@@ -28,13 +29,92 @@ def empty():
     if usernameEntry.get()=="" or passwordEntry.get()=="":
         messagebox.showerror("ERROR", "All fields are required")
 def loginPage():
-    frame = Frame(root2,width=1400, height=800,bg="gray")
+    frame = Frame(root2,width=1400, height=800,)
     frame.place(x=0,y=0)
+    con4 = pymysql.connect(host="localhost", user="root", password="", database="employee" )
+    cur4 = con4.cursor()
+    cur4.execute("select * from products")
+    row4 = cur4.fetchall()
+    treeview3 =ttk.Treeview(frame,height=700)
+    treeview3["columns"]= ("PId","P_Name","Price","Category","Qty","Defects")
+    treeview3["show"]="headings"
+    s = ttk.Style(root)
+    s.theme_use("vista")
+    s.configure(".", font=('times new roman', 11))
+    s.configure("treeview3.Heading", foreground="BLUE", font=("times new roman", 14, "bold"))
+    #adding columns
+    treeview3.column('PId', width=5, minwidth=5,anchor=tk.CENTER)
+    treeview3.column('P_Name', width=30, minwidth=20,anchor=tk.CENTER)
+    treeview3.column('Price', width=30, minwidth=30,anchor=tk.CENTER)
+    treeview3.column('Category', width=30, minwidth=30,anchor=tk.CENTER)
+    treeview3.column('Qty', width=30, minwidth=30,anchor=tk.CENTER)
+    treeview3.column('Defects', width=30, minwidth=30,anchor=tk.CENTER)
+
+    #adding heading
+    treeview3.heading('PId', text='PId', anchor=CENTER)
+    treeview3.heading('P_Name', text='P_Name', anchor=CENTER)
+    treeview3.heading('Price', text='Price' ,anchor=CENTER)
+    treeview3.heading('Category', text='Category' ,anchor=CENTER)
+    treeview3.heading('Qty', text='Qty' ,anchor=CENTER)
+    treeview3.heading('Defects', text='Defected' ,anchor=CENTER)
+    #treeview3.pack(side=TOP, fill=BOTH)
+
+    treeview3.place(x=100,y=100,width=600,height=600)
+
+        
+    i = 0
+    for ro in row4:
+        treeview3.insert('',i, text="", values=(ro[0],ro[1],ro[2],ro[3],ro[4],ro[5]))
+        i = i+1
+    hsb = ttk.Scrollbar(treeview3, orient="vertical")
+    hsb.configure(command=treeview3.yview)
+    treeview3.configure(yscrollcommand=hsb.set)
+    hsb.pack(fill=Y,side=RIGHT)
+
+    labe = Label(frame, text="",font=("times new roman", 15))
+    labe.place(x=850,y=100)
+    labe["text"] = row[0]
+    btn = Button(frame,text="hello", command=hello)
+    btn.place(x=850,y=200)
+    def hello():
+        print(row[0],row[1],row[3],row4[0],row4[1],row4[2])
+        ent1.delete(0,END)
+        ent2.delete(0,END)
+        ent3.delete(0,END)
+        ent4.delete(0,END)
+        ent5.delete(0,END)
+        ent6.delete(0,END)
+
+        
+        #grab record NUmber 
+
+        selects = treeview.focus()
+
+        #grab record values
+        value = treeview.item(selects,'values')
+        ent1.insert(0,value[0])
+        ent2.insert(0,value[1])
+        ent3.insert(0,value[2])
+        ent4.insert(0,value[3])
+        ent5.insert(0,value[4])
+        ent6.insert(0,value[5])
+
+        print(row)
+
+
+
+
+
+
+
+
+
 def login():    
     try:
         con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
         cur = con.cursor()
         cur.execute("select * from employees where fname=%s and passwrd=%s",(usernameEntry.get(),passwordEntry.get()))
+        global row
         row = cur.fetchone()
         print(row)
         if row==None:
@@ -107,8 +187,6 @@ exitButton.place(x=250, y=470 , width=130)
 #StockButton.place(x=590, y=600 , width=130)
 #SellButton = Button(root, text="Sell", state="disable", font=("arial", 12, BOLD),foreground="red")  
 #SellButton.place(x=780, y=600 , width=130)
-
-
 
 
 
