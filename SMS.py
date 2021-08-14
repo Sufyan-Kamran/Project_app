@@ -68,55 +68,74 @@ def loginPage():
     treeview3.configure(yscrollcommand=hsb.set)
     hsb.pack(fill=Y,side=RIGHT)
 
+
+###################################### LABELS  ###########################################################
+    idlabe = Label(frame, text="Id : ",fg = "red",font=("times new roman", 15))
+    idlabe.place(x=750,y=100)
+    Namelabe = Label(frame, text="Name : ",fg="red",font=("times new roman", 15))
+    Namelabe.place(x=750,y=150)
+    Emaillabe = Label(frame, text="Email : ",fg="red",font=("times new roman", 15))
+    Emaillabe.place(x=750,y=200)
+    pIDlabe = Label(frame, text="Product Id : ",fg="red",font=("times new roman", 15))
+    pIDlabe.place(x=750,y=250)
+    Productlabe = Label(frame, text="Produt Name : ",fg="red",font=("times new roman", 15))
+    Productlabe.place(x=750,y=300)
+    Pricelabe = Label(frame, text="Price : ",fg="red",font=("times new roman", 15))
+    Pricelabe.place(x=750,y=350)
+    Pricelabe = Label(frame, text="Total Bill : ",fg="red",font=("times new roman", 15))
+    Pricelabe.place(x=750,y=400)
+###############################################################################################################
+
+####################################### UPDATE LABELS VALUES ###################################################    
     labe = Label(frame, text="",font=("times new roman", 15))
-    labe.place(x=850,y=100)
+    labe.place(x=900,y=100)
     labe["text"] = row[0]
     labe1 = Label(frame, text="",font=("times new roman", 15))
-    labe1.place(x=850,y=200)
+    labe1.place(x=900,y=150)
     labe1["text"] = row[1]
     labe2 = Label(frame, text="",font=("times new roman", 15))
-    labe2.place(x=850,y=300)
+    labe2.place(x=900,y=200)
     labe2["text"] = row[3]
 
     en1 = Entry(frame)
     en1.place(x=850,y=600)
     
     def hello():
-        print(row[0],row[1],row[3],row4[0],row4[1],row4[2])
-        #ent1.delete(0,END)
-        #ent2.delete(0,END)
-        #ent3.delete(0,END)
-        #ent4.delete(0,END)
-        #ent5.delete(0,END)
-        #ent6.delete(0,END)
-
-        
+        #print(row[0],row[1],row[3],row4[0],row4[1],row4[2])
         #grab record NUmber 
-
         selects = treeview3.focus()
-
         #grab record values
-        value = treeview3.item(selects,'values')
-        #ent1.insert(0,value[0])
-        #ent2.insert(0,value[1])
-        #ent3.insert(0,value[2])
-        #ent4.insert(0,value[3])
-        #ent5.insert(0,value[4])
-        #ent6.insert(0,value[5])
+        value = treeview3.item(selects,'values')        
         labe3 = Label(frame, text="",font=("times new roman", 15))
-        labe3.place(x=850,y=400)
+        labe3.place(x=900,y=250)
         labe3["text"] = value[0]
         labe4 = Label(frame, text="",font=("times new roman", 15))
-        labe4.place(x=850,y=500)
+        labe4.place(x=900,y=300)
         labe4["text"] = value[1]
-        labe4 = Label(frame, text="",font=("times new roman", 15))
-        labe4.place(x=850,y=550)
-        labe4["text"] = value[2]
+        labe5 = Label(frame, text="",font=("times new roman", 15))
+        labe5.place(x=900,y=350)
+        labe5["text"] = value[2]
+        labe5 = Label(frame, text="",font=("times new roman", 15))
+        labe5.place(x=900,y=400)
+        pi = int(value[0])
         a= int(value[2])
         b = int(en1.get())#int(row[0])
+        qt = int(value[4])
+        
+        if b <= qt:
+            fqt = qt - b
+            con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
+            cur = con.cursor()
+            cur.execute("update products set QTY=%s where Pid=%s",(fqt,pi))
+            con.commit()
+            con.close()    
+            messagebox.showinfo("Record Updated", "Record updated successfully")
+            print(fqt)
+        else:
+            messagebox.showerror("error","Sorry! not enough quantity available.")
+    
         c = a*b
-        print(c)
-
+        labe5["text"] = c
 
 
 
