@@ -36,7 +36,7 @@ def loginPage():
     cur4.execute("select * from products")
     row4 = cur4.fetchall()
     treeview3 =ttk.Treeview(frame,height=700)
-    treeview3["columns"]= ("PId","P_Name","Price","Category","Qty","Defects")
+    treeview3["columns"]= ("PId","P_Name","Price","Category")
     treeview3["show"]="headings"
     s = ttk.Style(root)
     s.theme_use("vista")
@@ -47,16 +47,13 @@ def loginPage():
     treeview3.column('P_Name', width=30, minwidth=20,anchor=tk.CENTER)
     treeview3.column('Price', width=30, minwidth=30,anchor=tk.CENTER)
     treeview3.column('Category', width=30, minwidth=30,anchor=tk.CENTER)
-    treeview3.column('Qty', width=30, minwidth=30,anchor=tk.CENTER)
-    treeview3.column('Defects', width=30, minwidth=30,anchor=tk.CENTER)
+    
 
     #adding heading
     treeview3.heading('PId', text='PId', anchor=CENTER)
     treeview3.heading('P_Name', text='P_Name', anchor=CENTER)
     treeview3.heading('Price', text='Price' ,anchor=CENTER)
     treeview3.heading('Category', text='Category' ,anchor=CENTER)
-    treeview3.heading('Qty', text='Qty' ,anchor=CENTER)
-    treeview3.heading('Defects', text='Defected' ,anchor=CENTER)
     #treeview3.pack(side=TOP, fill=BOTH)
 
     treeview3.place(x=100,y=100,width=600,height=600)
@@ -74,37 +71,57 @@ def loginPage():
     labe = Label(frame, text="",font=("times new roman", 15))
     labe.place(x=850,y=100)
     labe["text"] = row[0]
-    btn = Button(frame,text="hello", command=hello)
-    btn.place(x=850,y=200)
+    labe1 = Label(frame, text="",font=("times new roman", 15))
+    labe1.place(x=850,y=200)
+    labe1["text"] = row[1]
+    labe2 = Label(frame, text="",font=("times new roman", 15))
+    labe2.place(x=850,y=300)
+    labe2["text"] = row[3]
+
+    en1 = Entry(frame)
+    en1.place(x=850,y=600)
+    
     def hello():
         print(row[0],row[1],row[3],row4[0],row4[1],row4[2])
-        ent1.delete(0,END)
-        ent2.delete(0,END)
-        ent3.delete(0,END)
-        ent4.delete(0,END)
-        ent5.delete(0,END)
-        ent6.delete(0,END)
+        #ent1.delete(0,END)
+        #ent2.delete(0,END)
+        #ent3.delete(0,END)
+        #ent4.delete(0,END)
+        #ent5.delete(0,END)
+        #ent6.delete(0,END)
 
         
         #grab record NUmber 
 
-        selects = treeview.focus()
+        selects = treeview3.focus()
 
         #grab record values
-        value = treeview.item(selects,'values')
-        ent1.insert(0,value[0])
-        ent2.insert(0,value[1])
-        ent3.insert(0,value[2])
-        ent4.insert(0,value[3])
-        ent5.insert(0,value[4])
-        ent6.insert(0,value[5])
+        value = treeview3.item(selects,'values')
+        #ent1.insert(0,value[0])
+        #ent2.insert(0,value[1])
+        #ent3.insert(0,value[2])
+        #ent4.insert(0,value[3])
+        #ent5.insert(0,value[4])
+        #ent6.insert(0,value[5])
+        labe3 = Label(frame, text="",font=("times new roman", 15))
+        labe3.place(x=850,y=400)
+        labe3["text"] = value[0]
+        labe4 = Label(frame, text="",font=("times new roman", 15))
+        labe4.place(x=850,y=500)
+        labe4["text"] = value[1]
+        labe4 = Label(frame, text="",font=("times new roman", 15))
+        labe4.place(x=850,y=550)
+        labe4["text"] = value[2]
+        a= int(value[2])
+        b = int(en1.get())#int(row[0])
+        c = a*b
+        print(c)
 
-        print(row)
 
 
 
-
-
+    btn = Button(frame,text="hello", command=hello)
+    btn.place(x=950,y=700)
 
 
 
