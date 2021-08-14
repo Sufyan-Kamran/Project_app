@@ -1,3 +1,4 @@
+from datetime import datetime
 import tkinter as tk
 from tkinter import *
 from functools import partial
@@ -9,6 +10,8 @@ import pymysql
 from tkinter import ttk
 from PIL import Image, ImageTk
 ######################################### Section1 #######################################################
+now = datetime.now()
+formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
 def validateLogin(username, password):
 	print("username entered :", username.get())
 	print("password entered :", password.get())
@@ -55,7 +58,7 @@ def loginPage():
     treeview3.heading('Price', text='Price' ,anchor=CENTER)
     treeview3.heading('Category', text='Category' ,anchor=CENTER)
     #treeview3.pack(side=TOP, fill=BOTH)
-
+    
     treeview3.place(x=100,y=100,width=600,height=600)
 
         
@@ -84,7 +87,6 @@ def loginPage():
     Pricelabe.place(x=750,y=350)
     Pricelabe = Label(frame, text="Total Bill : ",fg="red",font=("times new roman", 15))
     Pricelabe.place(x=750,y=400)
-###############################################################################################################
 
 ####################################### UPDATE LABELS VALUES ###################################################    
     labe = Label(frame, text="",font=("times new roman", 15))
@@ -105,6 +107,7 @@ def loginPage():
         #grab record NUmber 
         selects = treeview3.focus()
         #grab record values
+        global value 
         value = treeview3.item(selects,'values')        
         labe3 = Label(frame, text="",font=("times new roman", 15))
         labe3.place(x=900,y=250)
@@ -119,8 +122,14 @@ def loginPage():
         labe5.place(x=900,y=400)
         pi = int(value[0])
         a= int(value[2])
+        global b
         b = int(en1.get())#int(row[0])
         qt = int(value[4])
+        global pid
+        pid = int(value[0])
+        
+
+
         
         if b <= qt:
             fqt = qt - b
@@ -131,18 +140,37 @@ def loginPage():
             con.close()    
             messagebox.showinfo("Record Updated", "Record updated successfully")
             print(fqt)
+
         else:
             messagebox.showerror("error","Sorry! not enough quantity available.")
-    
+        global c
         c = a*b
         labe5["text"] = c
+    def new():
+        con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
+        cur = con.cursor()
+        b = int(en1.get())#int(row[0])
+        global pnam_var
+        pnam_var = StringVar()
+        enk = Entry(frame,textvariable=pnam_var)
+        enk.place(x=800,y=50)
+        enk.insert(0,value[1])
+        print(enk.get())
+        if b == "":
+            messagebox.showerror("Field Error"," All fields are required")
+        else:
+            cur.execute("insert into orders(Id,name,email,Pid,Pname,QTY,bill,date) values(%s,%s,%s,%s,%s,%s,%s,%s)",(row[0],row[1],row[3],pid,enk.get(),b,c,formatted_date))
+            con.commit()
+            con.close
+            messagebox.showinfo("New Product", "New product added successfully")
 
 
 
     btn = Button(frame,text="hello", command=hello)
     btn.place(x=950,y=700)
-
-
+   
+    btn1 = Button(frame,text="order", command=new)
+    btn1.place(x=1050,y=700)
 
 
 def login():    
@@ -154,13 +182,9 @@ def login():
         row = cur.fetchone()
         print(row)
         if row==None:
-            SellButton["state"]="disable"
-            StockButton["state"]="disable"
             messagebox.showerror("ERROR", "Enter Valid Username or Password")    
         else:
             messagebox.showinfo("Success", "Login Successfully")
-            #SellButton["state"]="normal"
-            #StockButton["state"]="normal"
             loginPage()	
     except:
         pass
