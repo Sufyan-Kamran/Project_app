@@ -9,13 +9,18 @@ import re
 import pymysql
 from tkinter import ttk
 from PIL import Image, ImageTk
+
 ######################################### Section1 #######################################################
+
 now = datetime.now()
 formatted_date = now.strftime('%Y-%m-%d %H:%M:%S')
 def validateLogin(username, password):
 	print("username entered :", username.get())
 	print("password entered :", password.get())
 	return
+def admin():
+    if usernameEntry.get() == "ADMIN" or passwordEntry.get() == "Admin@001":
+        import treeVie
 def reset():
      usernameEntry.delete(0,'end')
      passwordEntry.delete(0, 'end')   	
@@ -59,7 +64,7 @@ def loginPage():
     treeview3.heading('Category', text='Category' ,anchor=CENTER)
     #treeview3.pack(side=TOP, fill=BOTH)
     
-    treeview3.place(x=100,y=100,width=600,height=600)
+    treeview3.place(x=10,y=100,width=600,height=600)
 
         
     i = 0
@@ -73,6 +78,7 @@ def loginPage():
 
 
 ###################################### LABELS  ###########################################################
+
     idlabe = Label(frame, text="Id : ",fg = "red",font=("times new roman", 15))
     idlabe.place(x=750,y=100)
     Namelabe = Label(frame, text="Name : ",fg="red",font=("times new roman", 15))
@@ -85,10 +91,13 @@ def loginPage():
     Productlabe.place(x=750,y=300)
     Pricelabe = Label(frame, text="Price : ",fg="red",font=("times new roman", 15))
     Pricelabe.place(x=750,y=350)
+    Qtylabe = Label(frame, text="Qty : ",fg="red",font=("times new roman", 15))
+    Qtylabe.place(x=750,y=400)
     Pricelabe = Label(frame, text="Total Bill : ",fg="red",font=("times new roman", 15))
-    Pricelabe.place(x=750,y=400)
+    Pricelabe.place(x=750,y=450)
 
 ####################################### UPDATE LABELS VALUES ###################################################    
+
     labe = Label(frame, text="",font=("times new roman", 15))
     labe.place(x=900,y=100)
     labe["text"] = row[0]
@@ -98,9 +107,8 @@ def loginPage():
     labe2 = Label(frame, text="",font=("times new roman", 15))
     labe2.place(x=900,y=200)
     labe2["text"] = row[3]
-
     en1 = Entry(frame)
-    en1.place(x=850,y=600)
+    en1.place(x=850,y=400)
     
     def hello():
         #print(row[0],row[1],row[3],row4[0],row4[1],row4[2])
@@ -119,7 +127,7 @@ def loginPage():
         labe5.place(x=900,y=350)
         labe5["text"] = value[2]
         labe5 = Label(frame, text="",font=("times new roman", 15))
-        labe5.place(x=900,y=400)
+        labe5.place(x=900,y=450)
         pi = int(value[0])
         a= int(value[2])
         global b
@@ -163,14 +171,61 @@ def loginPage():
             con.commit()
             con.close
             messagebox.showinfo("New Product", "New product added successfully")
+    Serac = Entry(frame)
+    Serac.place(x=950,y=70)
+    def Logout():
+        messagebox.showinfo("Logout", "Thanks for using our app.")
+        frame.destroy()
+    def Search():
+        treeview3.delete(*treeview3.get_children())
+        try:
+            con4 = pymysql.connect(host="localhost", user="root", password="", database="employee" )
+            cur4 = con4.cursor()
+            cur4.execute("select * from products where PName = %s",(Serac.get()))
+            row4 = cur4.fetchall()
+            i = 0
+            for ro in row4:
+                treeview3.insert('',i, text="", values=(ro[0],ro[1],ro[2],ro[3],ro[4],ro[5]))
+                i = i+1
+            if row4 == None:
+                cur4 = con4.cursor()
+                cur4.execute("select * from products where Category= %s",(Serac.get()))
+                row4 = cur4.fetchall()
+                i = 0
+                for ro in row4:
+                    treeview3.insert('',i, text="", values=(ro[0],ro[1],ro[2],ro[3],ro[4],ro[5]))
+                    i = i+1
+            else:
+                cur4 = con4.cursor()
+                cur4.execute("select * from products where Category= %s",(Serac.get()))
+                row4 = cur4.fetchall()
+                i = 0
+                for ro in row4:
+                    treeview3.insert('',i, text="", values=(ro[0],ro[1],ro[2],ro[3],ro[4],ro[5]))
+                    i = i+1
+        except Exception as e:
+            print(e)
 
 
-
-    btn = Button(frame,text="hello", command=hello)
+    l = Label(frame, text="", font=("times new romans",18,"bold"), fg="green")
+    l.place(x=600,y=20)
+    l["text"] = "Welcome " + row[1]
+    logbtn = Button(frame,text="Logout", command=Logout)
+    logbtn.place(x=950,y=20)
+    btn = Button(frame,text="Search", command=Search)
+    btn.place(x=1050,y=20)
+    btn = Button(frame,text="Select", command=hello)
     btn.place(x=950,y=700)
    
     btn1 = Button(frame,text="order", command=new)
     btn1.place(x=1050,y=700)
+    con7 = pymysql.connect(host="localhost", user="root", password="", database="employee" )
+    cur7 = con7.cursor()
+    cur7.execute("select * from orders where date =2021-08")
+    cs = cur7.fetchall()
+    con7.commit()
+    con7.close()    
+    print(cs)
 
 
 def login():    
@@ -189,19 +244,13 @@ def login():
     except:
         pass
 ################################################ Section Change #####################################################
+
 root2 = Tk()  
 root2.geometry('1400x800+0+0')  
 root2.title('Stationary Management System | Login')
 root2.resizable("false","false")
 
-
-############################################### Background Image ##3333################################################
-
-#canvas = Canvas(root2, width=1500, height=800)
-#canvas.place(x=-10,y=0)
-#imge = ImageTk.PhotoImage(Image.open("background3.jpg"))
-#imge = img.resize((50, 50), Image.ANTIALIAS)
-#canvas.create_image(-10, 0, anchor=NW, image=imge)
+######################################## Login Page Background ###########################################
 
 image1 = Image.open("background3.jpg")
 image1 = image1.resize((1400,800), Image.ANTIALIAS) 
@@ -210,13 +259,12 @@ canvas = tk.Label(root2,image=test)
 canvas.image = test
 canvas.place(x=0,y=0)
 
-
-
 root = Frame(canvas, width=600,height=600, bg="white")
 root.place(x=430,y=120)
 root3 = Frame(canvas, width=1400,height=50, bg="gray4")
 root3.place(x=0,y=0)
 
+######################################## Login Page Labels and Entries ####################################
 
 label2 = Label(root3,font=("times new roman",18,"bold"),bg="gray4",fg="White",text="Stationary Management System | Developed By Maryam.")
 label2.place(x=450,y=10)
@@ -236,23 +284,14 @@ passwordLabel.place(x=120, y=270 )
 password = StringVar()
 passwordEntry = Entry(root, textvariable=password, show='*')
 passwordEntry.place(x=240, y=270 , width=200, height=25)
+
 ######################################## Buttons ###########################################################
-loginButton = Button(root, text="Login", font=("arial", 12, BOLD), command=lambda:[passchk(), empty(),login()])#validateLogin
+
+loginButton = Button(root, text="Login", font=("arial", 12, BOLD), command=lambda:[passchk(), empty(),admin(),login()])#validateLogin
 loginButton.place(x=250, y=370 , width=130)
 resetButton = Button(root, text="Reset", font=("arial", 12, BOLD), foreground="blue" , command=reset)
 resetButton.place(x=250, y=420 , width=130)
-exitButton = Button(root, text="Exit", font=("arial", 12, BOLD),foreground="red", command=root.destroy) 
+exitButton = Button(root, text="Exit", font=("arial", 12, BOLD),foreground="red", command=root2.destroy) 
 exitButton.place(x=250, y=470 , width=130)
-#StockButton = Button(root, text="Stock",state="disable" ,font=("arial", 12, BOLD),foreground="red")  
-#StockButton.place(x=590, y=600 , width=130)
-#SellButton = Button(root, text="Sell", state="disable", font=("arial", 12, BOLD),foreground="red")  
-#SellButton.place(x=780, y=600 , width=130)
-
-
-
-
-
-
-
 
 root2.mainloop()     
