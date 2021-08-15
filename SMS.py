@@ -20,6 +20,7 @@ def validateLogin(username, password):
 	return
 def admin():
     if usernameEntry.get() == "ADMIN" or passwordEntry.get() == "Admin@001":
+        root2.destroy()
         import treeVie
 def reset():
      usernameEntry.delete(0,'end')
@@ -50,23 +51,18 @@ def loginPage():
     s.theme_use("vista")
     s.configure(".", font=('times new roman', 11))
     s.configure("treeview3.Heading", foreground="BLUE", font=("times new roman", 14, "bold"))
-    #adding columns
     treeview3.column('PId', width=5, minwidth=5,anchor=tk.CENTER)
     treeview3.column('P_Name', width=30, minwidth=20,anchor=tk.CENTER)
     treeview3.column('Price', width=30, minwidth=30,anchor=tk.CENTER)
     treeview3.column('Category', width=30, minwidth=30,anchor=tk.CENTER)
-    
 
-    #adding heading
+################################## Adding heading #####################################################
+
     treeview3.heading('PId', text='PId', anchor=CENTER)
     treeview3.heading('P_Name', text='P_Name', anchor=CENTER)
     treeview3.heading('Price', text='Price' ,anchor=CENTER)
-    treeview3.heading('Category', text='Category' ,anchor=CENTER)
-    #treeview3.pack(side=TOP, fill=BOTH)
-    
-    treeview3.place(x=10,y=100,width=600,height=600)
-
-        
+    treeview3.heading('Category', text='Category' ,anchor=CENTER)    
+    treeview3.place(x=10,y=100,width=650,height=600)
     i = 0
     for ro in row4:
         treeview3.insert('',i, text="", values=(ro[0],ro[1],ro[2],ro[3],ro[4],ro[5]))
@@ -76,6 +72,44 @@ def loginPage():
     treeview3.configure(yscrollcommand=hsb.set)
     hsb.pack(fill=Y,side=RIGHT)
 
+###########################################################################################################
+###########################################################################################################
+###########################################################################################################
+    
+    con5 = pymysql.connect(host="localhost", user="root", password="", database="employee" )
+    cur5 = con5.cursor()
+    cur5.execute("select * from orders where name=%s and email=%s",(row[1],row[3]))
+    row5 = cur5.fetchall()
+    treeview4 =ttk.Treeview(frame,height=700)
+    treeview4["columns"]= ("Id","Name","Product","Qty","Bill","Date")
+    treeview4["show"]="headings"
+    s = ttk.Style(root)
+    s.theme_use("vista")
+    s.configure(".", font=('times new roman', 11))
+    s.configure("treeview4.Heading", foreground="BLUE", font=("times new roman", 14, "bold"))
+    #adding columns
+    treeview4.column('Id', width=1, minwidth=1,anchor=tk.CENTER)
+    treeview4.column('Name', width=10, minwidth=10,anchor=tk.CENTER)
+    treeview4.column('Product', width=10, minwidth=10,anchor=tk.CENTER)
+    treeview4.column('Qty', width=10, minwidth=10,anchor=tk.CENTER)
+    treeview4.column('Bill', width=10, minwidth=10,anchor=tk.CENTER)
+    treeview4.column('Date', width=10, minwidth=10,anchor=tk.CENTER) 
+    #adding heading
+    treeview4.heading('Id', text='Id', anchor=CENTER)
+    treeview4.heading('Name', text='Name', anchor=CENTER)
+    treeview4.heading('Product', text='Product' ,anchor=CENTER)
+    treeview4.heading('Qty', text='Qty' ,anchor=CENTER)
+    treeview4.heading('Bill', text='Bill' ,anchor=CENTER)
+    treeview4.heading('Date', text='Date' ,anchor=CENTER)    
+    treeview4.place(x=670,y=100,width=650,height=600)        
+    i = 0
+    for ro in row5:
+        treeview4.insert('',i, text="", values=(ro[0],ro[1],ro[4],ro[5],ro[6],ro[7]))
+        i = i+1
+    hsb = ttk.Scrollbar(treeview4, orient="vertical")
+    hsb.configure(command=treeview4.yview)
+    treeview4.configure(yscrollcommand=hsb.set)
+    hsb.pack(fill=Y,side=RIGHT)
 
 ###################################### LABELS  ###########################################################
 
@@ -111,7 +145,6 @@ def loginPage():
     en1.place(x=850,y=400)
     
     def hello():
-        #print(row[0],row[1],row[3],row4[0],row4[1],row4[2])
         #grab record NUmber 
         selects = treeview3.focus()
         #grab record values
@@ -135,10 +168,6 @@ def loginPage():
         qt = int(value[4])
         global pid
         pid = int(value[0])
-        
-
-
-        
         if b <= qt:
             fqt = qt - b
             con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
@@ -148,7 +177,6 @@ def loginPage():
             con.close()    
             messagebox.showinfo("Record Updated", "Record updated successfully")
             print(fqt)
-
         else:
             messagebox.showerror("error","Sorry! not enough quantity available.")
         global c
@@ -205,8 +233,6 @@ def loginPage():
                     i = i+1
         except Exception as e:
             print(e)
-
-
     l = Label(frame, text="", font=("times new romans",18,"bold"), fg="green")
     l.place(x=600,y=20)
     l["text"] = "Welcome " + row[1]
@@ -216,7 +242,6 @@ def loginPage():
     btn.place(x=1050,y=20)
     btn = Button(frame,text="Select", command=hello)
     btn.place(x=950,y=700)
-   
     btn1 = Button(frame,text="order", command=new)
     btn1.place(x=1050,y=700)
     con7 = pymysql.connect(host="localhost", user="root", password="", database="employee" )
@@ -226,8 +251,6 @@ def loginPage():
     con7.commit()
     con7.close()    
     print(cs)
-
-
 def login():    
     try:
         con = pymysql.connect(host="localhost", user="root", password="", database="employee" )
@@ -259,6 +282,7 @@ canvas = tk.Label(root2,image=test)
 canvas.image = test
 canvas.place(x=0,y=0)
 
+######################################## FRAME #######################################################
 root = Frame(canvas, width=600,height=600, bg="white")
 root.place(x=430,y=120)
 root3 = Frame(canvas, width=1400,height=50, bg="gray4")
